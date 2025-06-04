@@ -1,17 +1,12 @@
-import axios from 'axios';
+import axiosInstance from './axios-config';
 
-const API_URL = 'http://localhost:8000/api';
-
-// Configuração base do axios
-const api = axios.create({
-  baseURL: API_URL
-});
+// Usando a instância configurada do axios
 
 // Serviços para os Livros
 export const livrosService = {
   getAll: async () => {
     try {
-      const response = await api.get('/livros/');
+      const response = await axiosInstance.get('/livros/');
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar livros:', error);
@@ -21,7 +16,7 @@ export const livrosService = {
   
   getById: async (id) => {
     try {
-      const response = await api.get(`/livros/${id}/`);
+      const response = await axiosInstance.get(`/livros/${id}/`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar livro ${id}:`, error);
@@ -31,7 +26,7 @@ export const livrosService = {
   
   create: async (livroData) => {
     try {
-      const response = await api.post('/livros/', livroData);
+      const response = await axiosInstance.post('/livros/', livroData);
       return response.data;
     } catch (error) {
       console.error('Erro ao criar livro:', error);
@@ -41,7 +36,7 @@ export const livrosService = {
   
   update: async (id, livroData) => {
     try {
-      const response = await api.put(`/livros/${id}/`, livroData);
+      const response = await axiosInstance.put(`/livros/${id}/`, livroData);
       return response.data;
     } catch (error) {
       console.error(`Erro ao atualizar livro ${id}:`, error);
@@ -51,7 +46,7 @@ export const livrosService = {
   
   delete: async (id) => {
     try {
-      await api.delete(`/livros/${id}/`);
+      await axiosInstance.delete(`/livros/${id}/`);
       return true;
     } catch (error) {
       console.error(`Erro ao deletar livro ${id}:`, error);
@@ -61,7 +56,7 @@ export const livrosService = {
   
   getAvaliacoes: async (id) => {
     try {
-      const response = await api.get(`/livros/${id}/avaliacoes/`);
+      const response = await axiosInstance.get(`/livros/${id}/avaliacoes/`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar avaliações do livro ${id}:`, error);
@@ -74,7 +69,7 @@ export const livrosService = {
 export const categoriasService = {
   getAll: async () => {
     try {
-      const response = await api.get('/categorias/');
+      const response = await axiosInstance.get('/categorias/');
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar categorias:', error);
@@ -84,7 +79,7 @@ export const categoriasService = {
   
   getById: async (id) => {
     try {
-      const response = await api.get(`/categorias/${id}/`);
+      const response = await axiosInstance.get(`/categorias/${id}/`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar categoria ${id}:`, error);
@@ -94,7 +89,7 @@ export const categoriasService = {
   
   create: async (categoriaData) => {
     try {
-      const response = await api.post('/categorias/', categoriaData);
+      const response = await axiosInstance.post('/categorias/', categoriaData);
       return response.data;
     } catch (error) {
       console.error('Erro ao criar categoria:', error);
@@ -104,7 +99,7 @@ export const categoriasService = {
   
   delete: async (id) => {
     try {
-      await api.delete(`/categorias/${id}/`);
+      await axiosInstance.delete(`/categorias/${id}/`);
       return true;
     } catch (error) {
       console.error(`Erro ao deletar categoria ${id}:`, error);
@@ -117,7 +112,7 @@ export const categoriasService = {
 export const autoresService = {
   getAll: async () => {
     try {
-      const response = await api.get('/autores/');
+      const response = await axiosInstance.get('/autores/');
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar autores:', error);
@@ -127,7 +122,7 @@ export const autoresService = {
   
   getById: async (id) => {
     try {
-      const response = await api.get(`/autores/${id}/`);
+      const response = await axiosInstance.get(`/autores/${id}/`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar autor ${id}:`, error);
@@ -137,7 +132,7 @@ export const autoresService = {
   
   create: async (autorData) => {
     try {
-      const response = await api.post('/autores/', autorData);
+      const response = await axiosInstance.post('/autores/', autorData);
       return response.data;
     } catch (error) {
       console.error('Erro ao criar autor:', error);
@@ -147,7 +142,7 @@ export const autoresService = {
   
   delete: async (id) => {
     try {
-      await api.delete(`/autores/${id}/`);
+      await axiosInstance.delete(`/autores/${id}/`);
       return true;
     } catch (error) {
       console.error(`Erro ao deletar autor ${id}:`, error);
@@ -160,7 +155,7 @@ export const autoresService = {
 export const avaliacoesService = {
   getAll: async () => {
     try {
-      const response = await api.get('/avaliacoes/');
+      const response = await axiosInstance.get('/avaliacoes/');
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar avaliações:', error);
@@ -170,7 +165,7 @@ export const avaliacoesService = {
   
   getById: async (id) => {
     try {
-      const response = await api.get(`/avaliacoes/${id}/`);
+      const response = await axiosInstance.get(`/avaliacoes/${id}/`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar avaliação ${id}:`, error);
@@ -180,7 +175,7 @@ export const avaliacoesService = {
   
   create: async (avaliacaoData) => {
     try {
-      const response = await api.post('/avaliacoes/', avaliacaoData);
+      const response = await axiosInstance.post('/avaliacoes/', avaliacaoData);
       return response.data;
     } catch (error) {
       console.error('Erro ao criar avaliação:', error);
@@ -190,7 +185,7 @@ export const avaliacoesService = {
   
   delete: async (id) => {
     try {
-      await api.delete(`/avaliacoes/${id}/`);
+      await axiosInstance.delete(`/avaliacoes/${id}/`);
       return true;
     } catch (error) {
       console.error(`Erro ao deletar avaliação ${id}:`, error);
@@ -203,7 +198,7 @@ export const avaliacoesService = {
 export const usuariosService = {
   getAll: async () => {
     try {
-      const response = await api.get('/usuarios/');
+      const response = await axiosInstance.get('/usuarios/');
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar usuários:', error);
@@ -213,7 +208,7 @@ export const usuariosService = {
   
   getById: async (id) => {
     try {
-      const response = await api.get(`/usuarios/${id}/`);
+      const response = await axiosInstance.get(`/usuarios/${id}/`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar usuário ${id}:`, error);
@@ -223,7 +218,7 @@ export const usuariosService = {
   
   create: async (usuarioData) => {
     try {
-      const response = await api.post('/usuarios/', usuarioData);
+      const response = await axiosInstance.post('/usuarios/', usuarioData);
       return response.data;
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
