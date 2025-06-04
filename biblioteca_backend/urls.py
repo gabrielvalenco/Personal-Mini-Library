@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 
 urlpatterns = [
     # URL para admin do Django
@@ -23,4 +24,5 @@ urlpatterns = [
     
     # URLs da API
     path('api/', include('api.urls')),
+    path('', RedirectView.as_view(url='/api/', permanent=True)),
 ]
