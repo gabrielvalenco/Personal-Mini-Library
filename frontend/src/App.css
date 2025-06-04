@@ -1,0 +1,59 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.page-title {
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.action-buttons {
+  margin-bottom: 1.5rem;
+}
+
+.book-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-card .card-body {
+  flex: 1;
+}
+
+.star-rating {
+  color: #FFD700;
+  font-size: 1.5rem;
+}
+
+.detail-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.detail-value {
+  margin-bottom: 1.5rem;
+}
+
+.review-card {
+  margin-bottom: 1rem;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.author-badge, .category-badge {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
