@@ -1,59 +1,586 @@
+:root {
+  /* Cores compartilhadas entre temas */
+  --secondary-color: #3498db;
+  --accent-color: #e67e22;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
+  
+  /* Cores do tema claro (padrão) */
+  --primary-color: #2c3e50;
+  --bg-color: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-color: #34495e;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --card-bg: #ffffff;
+  --border-color: #dee2e6;
+}
+
+[data-theme="dark"] {
+  /* Cores do tema escuro */
+  --primary-color: #1a1a2e;
+  --bg-color: #121212;
+  --bg-secondary: #1e1e24;
+  --text-color: #e1e1e1;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-bg: #1e1e24;
+  --border-color: #333;
+}
+
+body {
+  font-family: 'Nunito', 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
+  background-color: var(--bg-color);
 }
 
 main {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
-  color: var(--dark-color);
+  color: var(--primary-color);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 3px solid var(--accent-color);
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
+}
+
+.page-title::after {
+  content: '📚';
+  font-size: 0.8em;
+  margin-left: 10px;
+  opacity: 0.8;
+}
+
+/* Navbar customizada */
+.navbar {
+  box-shadow: var(--box-shadow);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.navbar-brand::before {
+  content: '📖 ';
+  margin-right: 5px;
+}
+
+.navbar .nav-link {
+  position: relative;
+  transition: var(--transition);
+  font-weight: 600;
+  padding: 0.5rem 1rem !important;
+  margin: 0 0.2rem;
+}
+
+.navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navbar .nav-link:hover::after,
+.navbar .nav-link.active::after {
+  width: 80%;
+}
+
+.navbar .btn-outline-light {
+  border-radius: var(--border-radius);
+  border-width: 2px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.navbar .btn-outline-light:hover {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
 }
 
 .action-buttons {
   margin-bottom: 1.5rem;
+  display: flex;
+  gap: 10px;
 }
 
+/* Estilos para botões */
+.btn {
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.8s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
+}
+
+/* Cards de livros estilizados */
 .book-card {
   height: 100%;
   display: flex;
   flex-direction: column;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  border: none;
+  overflow: hidden;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.book-card .card-header {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+  padding: 1rem;
+  border-bottom: 3px solid var(--accent-color);
 }
 
 .book-card .card-body {
   flex: 1;
+  padding: 1.25rem;
 }
 
+.book-card .card-footer {
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Sistema de avaliação por estrelas */
 .star-rating {
   color: #FFD700;
   font-size: 1.5rem;
+  display: inline-block;
+  margin-right: 2px;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
 }
 
+.star-rating:hover {
+  transform: scale(1.2);
+}
+
+/* Detalhes do livro */
 .detail-label {
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 0.5rem;
+  color: var(--primary-color);
+  border-left: 4px solid var(--accent-color);
+  padding-left: 10px;
 }
 
 .detail-value {
   margin-bottom: 1.5rem;
+  padding-left: 14px;
+  border-left: 1px dashed #ccc;
 }
 
+/* Cards de avaliações */
 .review-card {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  border: none;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.review-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+}
+
+.review-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid var(--accent-color);
 }
 
 .review-date {
   font-size: 0.8rem;
   color: #6c757d;
+  font-style: italic;
 }
 
+/* Animações e efeitos adicionais */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.row > div {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Diferentes tempos de atraso para criar um efeito cascata */
+.row > div:nth-child(1) { animation-delay: 0.1s; }
+.row > div:nth-child(2) { animation-delay: 0.2s; }
+.row > div:nth-child(3) { animation-delay: 0.3s; }
+.row > div:nth-child(4) { animation-delay: 0.4s; }
+
+/* Estilos para formulários */
+.form-control, .form-select {
+  border-radius: var(--border-radius);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced4da;
+  transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
+  border-color: var(--secondary-color);
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+/* Estilização de badges para autores e categorias */
 .author-badge, .category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+
+.author-badge {
+  background-color: rgba(52, 152, 219, 0.15);
+  color: var(--secondary-color);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.author-badge:hover {
+  background-color: rgba(52, 152, 219, 0.25);
+  transform: translateY(-2px);
+}
+
+.category-badge {
+  background-color: rgba(230, 126, 34, 0.15);
+  color: var(--accent-color);
+  border: 1px solid rgba(230, 126, 34, 0.3);
+}
+
+.category-badge:hover {
+  background-color: rgba(230, 126, 34, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Breadcrumbs personalizados */
+.breadcrumb {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--secondary-color);
+}
+
+.breadcrumb-item a {
+  color: var(--secondary-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+  content: '➤';
+  color: var(--accent-color);
+}
+
+.breadcrumb-item.active {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+/* Footer estilizado */
+footer {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%) !important;
+  color: white;
+  padding: 1.5rem 0 !important;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  z-index: 10;
+}
+
+footer p {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+footer p::before {
+  content: '📚 ';
+  margin-right: 5px;
+}
+
+/* Container principal com efeito de papel */
+.container.mt-4 {
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  position: relative;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem;
+  position: relative;
+  border: 1px solid var(--border-color);
+}
+
+.container.mt-4::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+/* Estilos para o botão de alternar tema */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  margin-left: 1rem;
+  border-radius: 50%;
+  transition: var(--transition);
+  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.theme-toggle svg {
+  transition: var(--transition);
+}
+
+/* Z-index especial para elementos flutuantes */
+
+/* Modal personalizado com React */
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1050;
+  cursor: pointer;
+}
+
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1060;
+  pointer-events: none;
+}
+
+.custom-modal-dialog {
+  width: 100%;
+  max-width: 500px;
+  margin: 1.75rem auto;
+  position: relative;
+  pointer-events: auto;
+}
+
+.custom-modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.custom-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.custom-modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.custom-modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  gap: 0.5rem;
+}
+
+/* Garantir que formulários dentro dos modais usem as cores do tema */
+.custom-modal .form-control,
+.custom-modal .form-select {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+.custom-modal .form-control:focus,
+.custom-modal .form-select:focus {
+  border-color: var(--secondary-color) !important;
+  box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25) !important;
+}
+
+/* Efeito especial quando alterna o tema */
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s;
+}
+
+.theme-toggle:active::after {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 0;
+}
+
+/* Ajustes adicionais para modo escuro */
+[data-theme="dark"] .card {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .card-header {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .breadcrumb {
+  background-color: var(--card-bg);
 }

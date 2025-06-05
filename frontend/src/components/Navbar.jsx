@@ -1,41 +1,110 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Navbar = () => {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container">
-        <Link className="navbar-brand" to="/">Mini Biblioteca</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <NavLink className={({isActive}) => isActive ? "nav-link active" : "nav-link"} to="/">Home</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className={({isActive}) => isActive ? "nav-link active" : "nav-link"} to="/livros">Livros</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className={({isActive}) => isActive ? "nav-link active" : "nav-link"} to="/autores">Autores</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className={({isActive}) => isActive ? "nav-link active" : "nav-link"} to="/categorias">Categorias</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className={({isActive}) => isActive ? "nav-link active" : "nav-link"} to="/avaliacoes">Avaliações</NavLink>
-            </li>
-          </ul>
-          <div className="d-flex">
-            <Link className="btn btn-outline-light me-2" to="/livros/adicionar">
-              <i className="bi bi-plus-circle me-1"></i> Adicionar Livro
-            </Link>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
+    const [scrolled, setScrolled] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+    const { theme } = useContext(ThemeContext);
+    
+    // Detecta o scroll para adicionar efeito de sombra na navbar
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 20) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+    
+    // Fecha o menu mobile ao clicar em um link
+    const closeMenu = () => {
+        setExpanded(false);
+    };
+    
+    return (
+        <nav className={`navbar navbar-expand-lg navbar-dark mb-4 ${scrolled ? 'shadow-lg' : ''}`}>
+            <div className="container">
+                <NavLink className="navbar-brand" to="/">
+                    Minha Biblioteca Pessoal
+                </NavLink>
+                <button 
+                    className="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" 
+                    aria-expanded={expanded ? "true" : "false"}
+                    aria-label="Toggle navigation"
+                    onClick={() => setExpanded(!expanded)}
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className={`collapse navbar-collapse ${expanded ? 'show' : ''}`} id="navbarNav">
+                    <ul className="navbar-nav ms-auto">
+                        <li className="nav-item">
+                            <NavLink 
+                                className={({isActive}) => isActive ? "nav-link active" : "nav-link"} 
+                                to="/"
+                                onClick={closeMenu}
+                            >
+                                Home
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
+                                className={({isActive}) => isActive ? "nav-link active" : "nav-link"} 
+                                to="/livros"
+                                onClick={closeMenu}
+                            >
+                                Livros
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
+                                className={({isActive}) => isActive ? "nav-link active" : "nav-link"} 
+                                to="/autores"
+                                onClick={closeMenu}
+                            >
+                                Autores
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
+                                className={({isActive}) => isActive ? "nav-link active" : "nav-link"} 
+                                to="/categorias"
+                                onClick={closeMenu}
+                            >
+                                Categorias
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink 
+                                className={({isActive}) => isActive ? "nav-link active" : "nav-link"} 
+                                to="/avaliacoes"
+                                onClick={closeMenu}
+                            >
+                                Avaliações
+                            </NavLink>
+                        </li>
+                    </ul>
+                    <div className="d-flex align-items-center">
+                        <NavLink className="btn btn-outline-light me-2" to="/livros/adicionar" onClick={closeMenu}>
+                            <i className="bi bi-plus-circle me-1"></i> Adicionar Livro
+                        </NavLink>
+                        <ThemeToggle />
+                    </div>
+                </div>
+            </div>
+        </nav>
+    );
 };
 
 export default Navbar;
