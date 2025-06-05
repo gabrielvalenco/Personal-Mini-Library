@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { avaliacoesService, livrosService } from '../services/api';
 import { formatShortDate } from '../utils/formatDate';
@@ -14,19 +14,23 @@ function AvaliacoesPage() {
     const fetchAvaliacoes = async () => {
       try {
         setLoading(true);
-        const data = await avaliacoesService.getAll();
-        setAvaliacoes(data);
+        const response = await avaliacoesService.getAll();
+        // Verificar formato do retorno e extrair dados corretamente
+        const avaliacoesData = response.results || response;
+        setAvaliacoes(avaliacoesData);
 
         // Buscar informações dos livros para cada avaliação
         const livrosMap = {};
-        for (const avaliacao of data) {
-          if (!livrosMap[avaliacao.livro]) {
-            try {
-              const livroData = await livrosService.getById(avaliacao.livro);
-              livrosMap[avaliacao.livro] = livroData;
-            } catch (err) {
-              console.error(`Erro ao buscar livro ${avaliacao.livro}:`, err);
-              livrosMap[avaliacao.livro] = { titulo: 'Livro não encontrado' };
+        if (Array.isArray(avaliacoesData)) {
+          for (const avaliacao of avaliacoesData) {
+            if (!livrosMap[avaliacao.livro]) {
+              try {
+                const livroData = await livrosService.getById(avaliacao.livro);
+                livrosMap[avaliacao.livro] = livroData;
+              } catch (err) {
+                console.error(`Erro ao buscar livro ${avaliacao.livro}:`, err);
+                livrosMap[avaliacao.livro] = { titulo: 'Livro não encontrado' };
+              }
             }
           }
         }

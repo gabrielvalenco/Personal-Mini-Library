@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { livrosService, usuariosService } from '../services/api';
+import { livrosService, usuariosService, avaliacoesService } from '../services/api';
 
 const LivroDetalhePage = () => {
   const { id } = useParams();
@@ -13,20 +13,17 @@ const LivroDetalhePage = () => {
   const [novaAvaliacao, setNovaAvaliacao] = useState({
     nota: 5,
     comentario: '',
-    usuario: '',
+    usuario: 1, // Definindo usuário padrão com ID 1
     livro: id
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [livroData, usuariosData] = await Promise.all([
-          livrosService.getById(id),
-          usuariosService.getAll()
-        ]);
+        // Não precisamos mais buscar usuários, já que definimos um padrão
+        const livroData = await livrosService.getById(id);
         
         setLivro(livroData);
-        setUsuarios(usuariosData.results || []);
         setLoading(false);
       } catch (err) {
         setError('Erro ao carregar dados do livro.');
@@ -63,21 +60,45 @@ const LivroDetalhePage = () => {
   const handleAvaliacaoSubmit = async (e) => {
     e.preventDefault();
     try {
-      await livrosService.create(novaAvaliacao);
+      console.log('Enviando avaliação:', { ...novaAvaliacao });
+      
+      // Formatar os dados conforme a expectativa da API
+      const dadosFormatados = {
+        nota: parseInt(novaAvaliacao.nota),
+        comentario: novaAvaliacao.comentario,
+        livro: parseInt(id),
+        usuario: 1 // Agora temos certeza que existe um usuário com ID 1
+      };
+      
+      console.log('Dados formatados:', dadosFormatados);
+      
+      // Usar o serviço apropriado para criar uma avaliação
+      await avaliacoesService.create(dadosFormatados);
+      
       // Recarregar os dados do livro para mostrar a nova avaliação
       const livroAtualizado = await livrosService.getById(id);
       setLivro(livroAtualizado);
+      
+      // Fechar o modal
       setShowModal(false);
       
-      // Resetar o formulário
+      // Resetar o formulário (mantendo usuário padrão ID 1)
       setNovaAvaliacao({
         nota: 5,
         comentario: '',
-        usuario: '',
-        livro: id
+        usuario: 1,
+        livro: parseInt(id)
       });
     } catch (err) {
       console.error('Erro ao adicionar avaliação:', err);
+      
+      // Exibir detalhes da resposta de erro para depuração
+      if (err.response && err.response.data) {
+        console.error('Detalhes do erro da API:', err.response.data);
+        alert(`Erro ao adicionar avaliação: ${JSON.stringify(err.response.data)}`);
+      } else {
+        alert('Erro ao adicionar avaliação. Confira o console para mais detalhes.');
+      }
     }
   };
 
@@ -172,18 +193,15 @@ const LivroDetalhePage = () => {
       </div>
 
       <div className="card shadow-sm mb-4">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h3 className="mb-0">Avaliações</h3>
-          <button 
-            className="btn btn-primary" 
-            onClick={() => setShowModal(true)}
-            data-bs-toggle="modal" 
-            data-bs-target="#avaliacaoModal"
-          >
-            Adicionar Avaliação
-          </button>
+        <div className="card-header">
+          <h2>Avaliações</h2>
         </div>
         <div className="card-body">
+          <div className="d-flex justify-content-end mb-3">
+            <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+              Adicionar Avaliação
+            </button>
+          </div>
           {livro.avaliacoes && livro.avaliacoes.length > 0 ? (
             livro.avaliacoes.map((avaliacao) => (
               <div key={avaliacao.id} className="card mb-3 review-card">
@@ -214,72 +232,74 @@ const LivroDetalhePage = () => {
         </div>
       </div>
 
-      {/* Modal para Adicionar Avaliação */}
-      <div className="modal fade" id="avaliacaoModal" tabIndex="-1" aria-labelledby="avaliacaoModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="avaliacaoModalLabel">Adicionar Avaliação</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      {/* Modal para Adicionar Avaliação (usando React para controlar a exibição) */}
+      {showModal && (
+        <>
+          <div 
+            className="custom-modal-backdrop" 
+            onClick={() => setShowModal(false)}
+          ></div>
+          <div className="custom-modal">
+            <div className="custom-modal-dialog">
+              <div className="custom-modal-content">
+                <div className="custom-modal-header">
+                  <h5 className="modal-title">Adicionar Avaliação</h5>
+                  <button 
+                    type="button" 
+                    className="btn-close" 
+                    onClick={() => setShowModal(false)} 
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <form onSubmit={handleAvaliacaoSubmit}>
+                  <div className="custom-modal-body">
+                    {/* Campo de usuário removido - usando valor fixo ID 1 */}
+                    <div className="mb-3">
+                      <label htmlFor="nota" className="form-label">Nota</label>
+                      <select
+                        id="nota"
+                        name="nota"
+                        className="form-select"
+                        value={novaAvaliacao.nota}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value={5}>5 - Excelente</option>
+                        <option value={4}>4 - Muito bom</option>
+                        <option value={3}>3 - Bom</option>
+                        <option value={2}>2 - Regular</option>
+                        <option value={1}>1 - Ruim</option>
+                      </select>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="comentario" className="form-label">Comentário</label>
+                      <textarea
+                        id="comentario"
+                        name="comentario"
+                        className="form-control"
+                        rows="4"
+                        value={novaAvaliacao.comentario}
+                        onChange={handleInputChange}
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="custom-modal-footer">
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary" 
+                      onClick={() => setShowModal(false)}
+                    >
+                      Cancelar
+                    </button>
+                    <button type="submit" className="btn btn-primary">Salvar Avaliação</button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <form onSubmit={handleAvaliacaoSubmit}>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label htmlFor="usuario" className="form-label">Usuário</label>
-                  <select
-                    id="usuario"
-                    name="usuario"
-                    className="form-select"
-                    value={novaAvaliacao.usuario}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Selecione um usuário</option>
-                    {usuarios.map(usuario => (
-                      <option key={usuario.id} value={usuario.id}>
-                        {usuario.nome_usuario}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="nota" className="form-label">Nota</label>
-                  <select
-                    id="nota"
-                    name="nota"
-                    className="form-select"
-                    value={novaAvaliacao.nota}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value={5}>5 - Excelente</option>
-                    <option value={4}>4 - Muito bom</option>
-                    <option value={3}>3 - Bom</option>
-                    <option value={2}>2 - Regular</option>
-                    <option value={1}>1 - Ruim</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="comentario" className="form-label">Comentário</label>
-                  <textarea
-                    id="comentario"
-                    name="comentario"
-                    className="form-control"
-                    rows="4"
-                    value={novaAvaliacao.comentario}
-                    onChange={handleInputChange}
-                    required
-                  ></textarea>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" className="btn btn-primary">Salvar Avaliação</button>
-              </div>
-            </form>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
