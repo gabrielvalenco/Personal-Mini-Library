@@ -10,11 +10,11 @@ const LivroCard = ({ livro }) => {
           {livro.ano_publicacao ? `Publicado em ${livro.ano_publicacao}` : 'Ano não informado'}
         </h6>
         <div className="mb-2">
-          <span className="badge bg-primary category-badge">{livro.categoria_nome}</span>
+          <span className="badge category-badge">{livro.categoria_nome}</span>
         </div>
         <div className="mb-3">
           {livro.autores_info && livro.autores_info.map(autor => (
-            <span key={autor.id} className="badge bg-secondary author-badge">{autor.nome}</span>
+            <span key={autor.id} className="badge author-badge">{autor.nome}</span>
           ))}
         </div>
         {livro.nota_media && (

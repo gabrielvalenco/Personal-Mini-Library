@@ -163,14 +163,14 @@ const LivroDetalhePage = () => {
           )}
 
           <div className="mb-3">
-            <span className="badge bg-primary fs-6 category-badge">{livro.categoria_nome}</span>
+            <span className="badge fs-6 category-badge">{livro.categoria_nome}</span>
           </div>
 
           <div className="mb-4">
             <h5>Autores:</h5>
             <div>
               {livro.autores_info && livro.autores_info.map(autor => (
-                <span key={autor.id} className="badge bg-secondary fs-6 me-2">{autor.nome}</span>
+                <span key={autor.id} className="badge fs-6 me-2 author-badge">{autor.nome}</span>
               ))}
             </div>
           </div>

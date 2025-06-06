@@ -80,3 +80,155 @@ The application utilizes the following 5 database tables (Django models):
 ```
 
 Access the application in your browser, typically at `http://localhost:3000` for React and the API at `http://localhost:8000/api/`.
+
+# Relatório Técnico
+
+## Arquitetura do Sistema
+
+O sistema Personal Mini Library foi desenvolvido seguindo uma arquitetura cliente-servidor moderna, com separação clara entre frontend e backend:
+
+- **Backend**: Implementado com Django e Django REST Framework, fornecendo uma API RESTful
+- **Frontend**: Desenvolvido com React.js, consumindo a API e fornecendo uma interface de usuário responsiva
+
+## API Backend (Django REST Framework)
+
+### Modelos de Dados
+
+O backend utiliza os seguintes modelos Django:
+
+1. **Usuario**: Representa usuários que fazem avaliações de livros
+   - Campos: `nome_usuario`
+
+2. **Categoria**: Representa categorias/gêneros de livros
+   - Campos: `nome`
+
+3. **Autor**: Representa autores de livros
+   - Campos: `nome`
+
+4. **Livro**: Representa os livros na biblioteca
+   - Campos: `titulo`, `ano_publicacao`
+   - Relacionamentos:
+     - `categoria`: ForeignKey para Categoria (N:1)
+     - `autores`: ManyToManyField para Autor (N:N)
+
+5. **Avaliacao**: Representa avaliações de livros feitas por usuários
+   - Campos: `nota`, `comentario`, `data_criacao`
+   - Relacionamentos:
+     - `livro`: ForeignKey para Livro (N:1)
+     - `usuario`: ForeignKey para Usuario (N:1)
+
+### Serializers
+
+Os serializers transformam os modelos Django em formatos JSON para a API:
+
+- **UsuarioSerializer**: Serializa dados de usuários
+- **CategoriaSerializer**: Serializa dados de categorias
+- **AutorSerializer**: Serializa dados de autores
+- **AvaliacaoSerializer**: Serializa dados de avaliações com campos adicionais como `usuario_nome`
+- **LivroSerializer**: Serializa dados de livros com campos calculados e relacionamentos aninhados, incluindo `nota_media`
+
+### Endpoints da API
+
+A API fornece os seguintes endpoints RESTful:
+
+| Endpoint | Método | Descrição |
+|----------|--------|------------|
+| `/api/usuarios/` | GET, POST | Listar todos os usuários ou criar um novo |
+| `/api/usuarios/:id/` | GET, PUT, DELETE | Obter, atualizar ou excluir um usuário específico |
+| `/api/categorias/` | GET, POST | Listar todas as categorias ou criar uma nova |
+| `/api/categorias/:id/` | GET, PUT, DELETE | Obter, atualizar ou excluir uma categoria específica |
+| `/api/autores/` | GET, POST | Listar todos os autores ou criar um novo |
+| `/api/autores/:id/` | GET, PUT, DELETE | Obter, atualizar ou excluir um autor específico |
+| `/api/livros/` | GET, POST | Listar todos os livros ou criar um novo |
+| `/api/livros/:id/` | GET, PUT, DELETE | Obter, atualizar ou excluir um livro específico |
+| `/api/livros/:id/avaliacoes/` | GET | Obter todas as avaliações de um livro específico |
+| `/api/avaliacoes/` | GET, POST | Listar todas as avaliações ou criar uma nova |
+| `/api/avaliacoes/:id/` | GET, PUT, DELETE | Obter, atualizar ou excluir uma avaliação específica |
+
+## Frontend (React)
+
+### Estrutura de Componentes
+
+O frontend é organizado em componentes React reutilizáveis:
+
+- **App**: Componente principal que gerencia o roteamento
+- **Navbar**: Barra de navegação com links para as principais seções
+- **LivroCard**: Card para exibir informações resumidas de um livro
+- **LivroForm**: Formulário para criar ou editar livros
+- **LivroDetalhePage**: Página de detalhes de um livro específico
+- **LivrosListPage**: Página que lista todos os livros
+- **AutoresPage**: Página para gerenciar autores
+- **CategoriasPage**: Página para gerenciar categorias
+
+### Gerenciamento de Estado
+
+O estado da aplicação é gerenciado usando hooks do React:
+
+- **useState**: Para gerenciar estados locais dos componentes
+- **useEffect**: Para efeitos colaterais como chamadas à API
+- **useParams**: Para acessar parâmetros da URL
+- **useNavigate**: Para navegação programática
+
+### Tema e Acessibilidade
+
+O projeto implementa um sistema de tema claro/escuro usando Context API:
+
+- **ThemeContext**: Contexto que armazena o tema atual
+- **ThemeProvider**: Provedor que disponibiliza o tema para toda a aplicação
+- Persistência do tema escolhido pelo usuário no localStorage
+
+## Problemas Resolvidos
+
+### 1. Modal de Avaliações Acessível
+
+**Problema**: O modal padrão do Bootstrap para adicionar avaliações apresentava problemas de acessibilidade e z-index.
+
+**Solução**: Implementação de um modal personalizado em React com:
+- Controle adequado de foco
+- Gerenciamento correto de z-index
+- Estilização CSS consistente com o tema da aplicação
+
+### 2. Simplificação do Formulário de Avaliação
+
+**Problema**: O formulário de avaliação exigia que o usuário selecionasse um usuário, complicando a experiência.
+
+**Solução**: 
+- Definição automática de um ID de usuário padrão (ID 1)
+- Remoção do campo de seleção de usuário do formulário
+- Simplificação da interface para focar na nota e comentário
+
+### 3. Formatação de Dados para a API
+
+**Problema**: Os dados enviados à API de avaliações não estavam no formato esperado pelo backend.
+
+**Solução**:
+- Conversão adequada de strings para números inteiros
+- Formatação correta dos dados antes do envio
+- Tratamento adequado de erros da API
+
+### 4. Estilização das Badges
+
+**Problema**: As badges de autor e categoria apresentavam cores inconsistentes devido a conflitos de estilo.
+
+**Solução**:
+- Remoção das classes `bg-primary` e `bg-secondary` do Bootstrap que conflitavam com os estilos personalizados
+- Uso exclusivo das classes personalizadas `author-badge` e `category-badge`
+- Manutenção da consistência visual em toda a aplicação
+
+## Tecnologias Utilizadas
+
+### Backend
+- Django
+- Django REST Framework
+- SQLite (desenvolvimento) / PostgreSQL (produção)
+
+### Frontend
+- React
+- React Router
+- Bootstrap (com customizações)
+- Axios para requisições HTTP
+
+### Ferramentas de Desenvolvimento
+- npm/yarn para gerenciamento de pacotes
+- Git para controle de versão
+- Laragon como ambiente de desenvolvimento local
